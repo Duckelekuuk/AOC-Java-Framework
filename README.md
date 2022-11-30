@@ -1,5 +1,5 @@
 # AOC-Java-Framework
-
+[![](https://jitpack.io/v/Duckelekuuk/AOC-Java-Framework.svg)](https://jitpack.io/#Duckelekuuk/AOC-Java-Framework)  
 Java framework for running Advent of code challenges
 
 ## Usage
