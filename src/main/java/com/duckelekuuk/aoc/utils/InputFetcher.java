@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Log4j2
 @UtilityClass
@@ -66,6 +67,6 @@ public class InputFetcher {
                 .header("User-Agent", "AOC-Framework-Java (Duckelekuuk)")
                 .build();
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-        return Arrays.stream(response.body().split("\n")).toList();
+        return Arrays.stream(response.body().split("\n")).collect(Collectors.toList());
     }
 }
