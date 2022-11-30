@@ -1,0 +1,13 @@
+<ThresholdFilter level="all">
+    <Appenders>
+        <Console name="STDOUT" target="SYSTEM_OUT" follow="true">
+            <PatternLayout disableAnsi="false" pattern="%style{%d{HH:mm:ss.SSS}}{green} - %style{%m%n}{red}"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Root level="INFO">
+            <AppenderRef ref="STDOUT"/>
+        </Root>
+        <Logger name="org.reflections" level="error"/>
+    </Loggers>
+</ThresholdFilter>
