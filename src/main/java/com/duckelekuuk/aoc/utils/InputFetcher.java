@@ -20,16 +20,19 @@ public class InputFetcher {
 
     private static final String INPUT_URL = "https://adventofcode.com/%d/day/%d/input";
     private static final String CACHE_FILE = "input-day-%d.txt";
-    private static final Path CACHE_FOLDER = Path.of("src/main/resources");
 
     // fetches the input for the given day and year
-    public static List<String> getInput(String session, int day, int year) throws IOException, InterruptedException {
+    public static List<String> getInput(Path cachePath, boolean autoFetch, String session, int day, int year) throws IOException, InterruptedException {
         // Check if cached
         log.debug("Fetching input for day {} and year {}", day, year);
         log.debug("Checking if input is cached");
-        if (isCached(day)) {
+        if (isCached(cachePath, day)) {
             log.debug("Input is cached, reading from cache");
-            return getFromCache(day);
+            return getFromCache(cachePath, day);
+        }
+
+        if (!autoFetch) {
+            throw new IllegalStateException("Input not found and auto fetch turned off");
         }
 
         // Fetch input
@@ -37,26 +40,26 @@ public class InputFetcher {
         String url = String.format(INPUT_URL, year, day);
 
         if (session == null) {
-            log.error("AOC_SESSION environment variable is not set");
-            throw new IllegalStateException("AOC_SESSION environment variable is not set");
+            log.error("Session variable is not set");
+            throw new IllegalStateException("Session variable is not set");
         }
 
         List<String> input = fetchFromUrl(url, session);
         log.debug("Fetched input, caching");
-        cacheInput(day, input);
+        cacheInput(cachePath, day, input);
         return input;
     }
 
-    private static void cacheInput(int day, List<String> input) throws IOException {
-        Files.write(CACHE_FOLDER.resolve(String.format(CACHE_FILE, day)), input);
+    private static void cacheInput(Path cachePath, int day, List<String> input) throws IOException {
+        Files.write(cachePath.resolve(String.format(CACHE_FILE, day)), input);
     }
 
-    private static List<String> getFromCache(int day) throws IOException {
-        return Files.readAllLines(CACHE_FOLDER.resolve(String.format(CACHE_FILE, day)));
+    private static List<String> getFromCache(Path cachePath, int day) throws IOException {
+        return Files.readAllLines(cachePath.resolve(String.format(CACHE_FILE, day)));
     }
 
-    private static boolean isCached(int day) {
-        return CACHE_FOLDER.resolve(String.format(CACHE_FILE, day)).toFile().exists();
+    private static boolean isCached(Path cachePath, int day) {
+        return cachePath.resolve(String.format(CACHE_FILE, day)).toFile().exists();
     }
 
     private static List<String> fetchFromUrl(String url, String aocSession) throws IOException, InterruptedException {

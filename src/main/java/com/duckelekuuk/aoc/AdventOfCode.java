@@ -7,6 +7,7 @@ import com.duckelekuuk.aoc.utils.InputFetcher;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
+import java.nio.file.Path;
 import java.util.Calendar;
 import java.util.List;
 import java.util.TimeZone;
@@ -19,9 +20,12 @@ public class AdventOfCode {
     private String session;
     @Setter
     private Integer day;
-
     @Setter
     private Integer year;
+    @Setter
+    private Path inputPath = Path.of("src/main/resources");
+    @Setter
+    private boolean autoFetch = true;
 
     public AdventOfCode(Class<?> mainClass) {
         this.mainClass = mainClass;
@@ -37,6 +41,16 @@ public class AdventOfCode {
         if (projectAnnotation == null) {
             throw new IllegalArgumentException("No AOCProject annotation found on class " + mainClass.getName());
         }
+
+        if (this.session == null) {
+            this.session = System.getenv().get("AOC_SESSION");
+        }
+
+        if (this.session == null) {
+            log.error("AOC_SESSION environment variable is not set");
+            throw new IllegalStateException("AOC_SESSION environment variable is not set");
+        }
+
         Calendar instance = Calendar.getInstance(TimeZone.getDefault());
         if (projectAnnotation.year() != -1) {
             this.year = projectAnnotation.year();
@@ -47,12 +61,12 @@ public class AdventOfCode {
         if (this.day == null && instance.get(Calendar.MONTH) == Calendar.DECEMBER) {
             this.day = instance.get(Calendar.DAY_OF_MONTH);
         } else {
-            this.day = 1;
+            throw new IllegalArgumentException("Please specify a date");
         }
 
         log.info("Starting Advent of Code {} Day {}", this.year, this.day);
 
-        List<String> input = InputFetcher.getInput(this.session, day, year);
+        List<String> input = InputFetcher.getInput(inputPath, autoFetch, this.session, day, year);
 
         // Scan for challenges
         ChallengeScanner challengeScanner = new ChallengeScanner(mainClass);
@@ -81,19 +95,10 @@ public class AdventOfCode {
             adventOfCode.setDay(Integer.parseInt(argumentOptions.get("--day")));
         }
 
-        String session;
-
         if (argumentOptions.containsKey("--session")) {
-            session = argumentOptions.get("--session");
-        } else {
-            session = System.getenv().get("AOC_SESSION");
+            adventOfCode.setSession(argumentOptions.get("--session"));
         }
 
-        if (session == null) {
-            log.error("AOC_SESSION environment variable is not set");
-            throw new IllegalStateException("AOC_SESSION environment variable is not set");
-        }
-        adventOfCode.setSession(session);
 
         adventOfCode.start();
     }
