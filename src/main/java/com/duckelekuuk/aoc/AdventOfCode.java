@@ -66,7 +66,7 @@ public class AdventOfCode {
 
         log.info("Starting Advent of Code {} Day {}", this.year, this.day);
 
-        List<String> input = InputFetcher.getInput(inputPath, autoFetch, this.session, day, year);
+        String input = InputFetcher.getInput(inputPath, autoFetch, this.session, day, year);
 
         // Scan for challenges
         ChallengeScanner challengeScanner = new ChallengeScanner(mainClass);

@@ -1,5 +1,8 @@
 package com.duckelekuuk.aoc;
 
+import com.duckelekuuk.aoc.mapper.InputMapper;
+import com.duckelekuuk.aoc.mapper.types.AOCMapper;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -8,11 +11,12 @@ import java.util.List;
 
 public final class AOCChallenge {
 
+    private static final InputMapper INPUT_MAPPER = new InputMapper();
     private final Object instance;
     private final Method partOne;
     private final Method partTwo;
     private final Field inputField;
-    private List<String> input;
+    private String input;
 
     public AOCChallenge(Object instance, Method partOne, Method partTwo, Field inputField) {
         this.instance = instance;
@@ -47,7 +51,7 @@ public final class AOCChallenge {
         return (String) method.invoke(instance);
     }
 
-    public void setInput(List<String> input) throws IllegalAccessException {
+    public void setInput(String input) throws IllegalAccessException {
         this.input = input;
         resetInput();
     }
@@ -56,7 +60,8 @@ public final class AOCChallenge {
         if (inputField == null) {
             throw new IllegalStateException("No input field found");
         }
-        inputField.set(instance, new ArrayList<>(input));
+        AOCMapper<?> mappingForType = INPUT_MAPPER.getMappingForType(inputField.getType());
+        inputField.set(instance, mappingForType.map(input));
     }
 
     public boolean hasPartTwo() {
