@@ -22,7 +22,7 @@ The example is a working version of Year 2021 day 1 challenge.
 <dependency>
     <groupId>com.github.Duckelekuuk</groupId>
     <artifactId>AOC-2022</artifactId>
-    <version>-SNAPSHOT</version>
+    <version>1.1.0</version>
 </dependency>
 ```
 
