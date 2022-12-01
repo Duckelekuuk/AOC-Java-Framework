@@ -8,6 +8,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -51,11 +52,11 @@ public class InputFetcher {
     }
 
     private static void cacheInput(Path cachePath, int day, String input) throws IOException {
-        Files.writeString(cachePath.resolve(String.format(CACHE_FILE, day)), input);
+        Files.writeString(cachePath.resolve(String.format(CACHE_FILE, day)), input, StandardCharsets.UTF_8);
     }
 
     private static String getFromCache(Path cachePath, int day) throws IOException {
-        return Files.readString(cachePath.resolve(String.format(CACHE_FILE, day)));
+        return Files.readString(cachePath.resolve(String.format(CACHE_FILE, day)), StandardCharsets.UTF_8);
     }
 
     private static boolean isCached(Path cachePath, int day) {
