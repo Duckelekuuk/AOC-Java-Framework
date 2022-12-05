@@ -58,10 +58,12 @@ public class AdventOfCode {
             this.year = instance.get(Calendar.YEAR);
         }
 
-        if (this.day == null && instance.get(Calendar.MONTH) == Calendar.DECEMBER) {
-            this.day = instance.get(Calendar.DAY_OF_MONTH);
-        } else {
-            throw new IllegalArgumentException("Please specify a date");
+        if (this.day == null) {
+            if (instance.get(Calendar.MONTH) == Calendar.DECEMBER) {
+                this.day = instance.get(Calendar.DAY_OF_MONTH);
+            } else {
+                throw new IllegalArgumentException("Please specify a date");
+            }
         }
 
         log.info("Starting Advent of Code {} Day {}", this.year, this.day);
