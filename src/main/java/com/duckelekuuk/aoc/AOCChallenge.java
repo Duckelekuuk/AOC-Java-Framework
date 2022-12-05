@@ -48,7 +48,7 @@ public final class AOCChallenge {
     }
 
     private String invoke(Method method) throws InvocationTargetException, IllegalAccessException {
-        return (String) method.invoke(instance);
+        return String.valueOf(method.invoke(instance));
     }
 
     public void setInput(String input) throws IllegalAccessException {
