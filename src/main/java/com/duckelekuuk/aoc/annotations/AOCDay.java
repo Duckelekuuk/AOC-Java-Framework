@@ -9,5 +9,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AOCDay {
 
-    public int day() default 1;
+    int day() default 1;
+
 }

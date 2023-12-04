@@ -1,5 +1,8 @@
 package com.duckelekuuk.aoc;
 
+import com.duckelekuuk.aoc.annotations.AOCPartOne;
+import com.duckelekuuk.aoc.annotations.AOCPartTwo;
+import com.duckelekuuk.aoc.annotations.AOCSample;
 import com.duckelekuuk.aoc.mapper.InputMapper;
 import com.duckelekuuk.aoc.mapper.types.AOCMapper;
 
@@ -7,6 +10,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public final class AOCChallenge {
@@ -33,7 +37,8 @@ public final class AOCChallenge {
      * @throws IllegalAccessException
      */
     public String runPartOne() throws InvocationTargetException, IllegalAccessException {
-        return invoke(partOne);
+        AOCPartOne partAnnotation = partOne.getDeclaredAnnotation(AOCPartOne.class);
+        return invoke(partOne, partAnnotation.useSample());
     }
 
     /**
@@ -44,11 +49,25 @@ public final class AOCChallenge {
      * @throws IllegalAccessException
      */
     public String runPartTwo() throws InvocationTargetException, IllegalAccessException {
-        return invoke(partTwo);
+        AOCPartTwo partAnnotation = partTwo.getDeclaredAnnotation(AOCPartTwo.class);
+        return invoke(partTwo, partAnnotation.useSample());
     }
 
-    private String invoke(Method method) throws InvocationTargetException, IllegalAccessException {
-        return String.valueOf(method.invoke(instance));
+    private String invoke(Method method, boolean useSample) throws InvocationTargetException, IllegalAccessException {
+
+        String oldInput = this.input;
+        if (useSample) {
+            AOCSample sampleAnnotation = method.getDeclaredAnnotation(AOCSample.class);
+            setInput(sampleAnnotation.value());
+        }
+
+        String result = String.valueOf(method.invoke(instance));
+
+        if (useSample) {
+            this.input = oldInput;
+        }
+
+        return result;
     }
 
     public void setInput(String input) throws IllegalAccessException {
